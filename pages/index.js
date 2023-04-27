@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import { Inter } from 'next/font/google'
 import { useSession, signIn, signOut } from "next-auth/react"
+import Nav from '@/components/Nav'
 
 
 const inter = Inter({ subsets: ['latin'] })
@@ -16,6 +17,9 @@ export default function Home() {
     </div>)
   }
   return (
-    <div>Logged in {session.user.email}</div>
+    <div className={'bg-blue-900 min-h-screen flex'}>
+      <Nav/>
+      <div className='bg-white flex-grow mt-2 mr-2 mb-2 rounded-lg p-4 text-black'>Você está conectado como: {session.user.email}</div>
+    </div>
   )
 }
