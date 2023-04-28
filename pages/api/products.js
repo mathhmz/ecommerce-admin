@@ -13,7 +13,6 @@ export default async function handle(req, res){
         else{
             res.json(await Product.find())
         }
-        res.json(await Product.find())
     }
     if (method === "POST"){
         const {title, description, price} = req.body
@@ -22,4 +21,14 @@ export default async function handle(req, res){
         })
         res.json(ProductDocument);
     }
+    
+    if(method === "PUT"){
+        const {_id, title, description, price} = req.body
+        await Product.updateOne({_id}, {title: title, description: description,price: price})
+        res.json(true)
+
+    }
+    
+
+
 }
