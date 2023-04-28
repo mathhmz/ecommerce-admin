@@ -1,25 +1,27 @@
 import Image from 'next/image'
-import { Inter } from 'next/font/google'
 import { useSession, signIn, signOut } from "next-auth/react"
 import Nav from '@/components/Nav'
+import Layout from '@/components/Layout'
 
-
-const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
-  const { data: session } = useSession()
-  if (!session) {
-    return (
-    <div className={'bg-blue-900 w-screen h-screen flex items-center'}>
-      <div className={'text-center w-full'}>
-        <button onClick={() => signIn("google")}  className={'bg-white p-2 px-4 rounded-lg text-black'}>Log in with Google</button>
+  const {data: session} = useSession()
+  if(!session) return;
+  return(
+    <Layout>
+      <div className='text-blue-900 flex justify-between'>
+        <h2>
+          Olá, <b>{session?.user?.name}</b>
+        </h2>
+
+        <div className='flex bg-gray-300 gap-1 text-black rounded-lg overflow-hidden'>
+          <img src="https://lh3.googleusercontent.com/a/AGNmyxYYDwxAAQtOhTeeE44dxR94GRpuj-FBTCIKuVSk=s96-c" className='w-6 h-6 '></img>
+          <span className='px-2'>
+            {session?.user?.name}
+          </span>
+        </div>
+        
       </div>
-    </div>)
-  }
-  return (
-    <div className={'bg-blue-900 min-h-screen flex'}>
-      <Nav/>
-      <div className='bg-white flex-grow mt-2 mr-2 mb-2 rounded-lg p-4 text-black'>Você está conectado como: {session.user.email}</div>
-    </div>
+    </Layout>
   )
 }
