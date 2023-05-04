@@ -5,6 +5,8 @@ import { redirect } from "next/dist/server/api-utils";
 import { Router, useRouter } from "next/router";
 import { useState } from "react";
 
+import { ReactSortable } from "react-sortablejs";
+
 export default function ProductForm({title: existingTitle, description: existingDescription, price: existingPrice, _id:existingId, images:existingImages}) { 
     const [images,setImages] = useState(existingImages || []) 
     const [title,setTitle] = useState(existingTitle || "")
@@ -12,6 +14,8 @@ export default function ProductForm({title: existingTitle, description: existing
     const [price, setPrice] = useState(existingPrice ||"")
     const [_id, setId] = useState(existingId ||"")
     const[goToProducts, setGoToProducts] = useState(false)
+    const [isUploading, setIsUploading] = useState(false)
+
 
     const router = useRouter()
     async function saveProduct(event){
@@ -38,6 +42,7 @@ export default function ProductForm({title: existingTitle, description: existing
 
     async function uploadImages(ev){
         const files = ev.target?.files;
+        setIsUploading(true)
         if(files.length > 0){
             const data = new FormData()
 
@@ -49,10 +54,17 @@ export default function ProductForm({title: existingTitle, description: existing
             const res = await axios.post('/api/upload', data)
             setImages(oldImages => {
                 return[...oldImages, ...res.data.links]
-            })                
+            })        
+            setIsUploading(false)        
         }
 
 
+
+
+    }
+
+    function updateImagesOrder(images){
+        setImages(images)
     }
 
 
@@ -66,13 +78,21 @@ export default function ProductForm({title: existingTitle, description: existing
                 <label>
                     Imagens
                 </label>
-                <div className="mb-2 flex flex-wrap gap-2">
 
+                
+                <div className="mb-2 flex flex-wrap gap-2">
+                    
+                    <ReactSortable className="flex flex-wrap gap-2" list={images} setList={updateImagesOrder}>
                     {!!images?.length && images.map(link => (
                         <div key={link} className="h-24">
                             <img className="w-24 rounded-lg" src={link} alt="Imagem do produto"></img>
                         </div>
                     ))}
+
+                    </ReactSortable>
+                    {isUploading && (
+                        <div className="w-24 h-24 flex items-center justify-center rounded-lg bg-gray-300">Enviando...</div>
+                    )}
                     
 
 
