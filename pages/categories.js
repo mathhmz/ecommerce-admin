@@ -3,9 +3,6 @@ import { Category } from "@/models/Category";
 import axios from "axios";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import Swal from "sweetalert2";
-
-import withReactContent from "sweetalert2-react-content";
 
 export default function Categories() {
     const [editedCategory, setEditedCategory] = useState(null)
@@ -22,16 +19,20 @@ export default function Categories() {
         .then(result => setCategories(result.data)  )
     }
 
+
     async function saveCategory(ev) {
         ev.preventDefault()
 
-        const  data =  {name,parentCategory}
+        let data =  {name,parentCategory}
+        if (data.parentCategory === ""){
+            delete data.parentCategory
+        }
 
         if(editedCategory){
             await axios.put('/api/categories',{...data, _id: editedCategory._id})
             setEditedCategory(null);
             setName('');
-            setParentCategory('')
+            setParentCategory("")
             fetchCategories();
 
         }else {
